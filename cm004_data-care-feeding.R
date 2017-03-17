@@ -1,45 +1,13 @@
----
-title: "R Markdown First Test"
-author: "Zach"
-date: "March 17, 2017"
-output: html_document
----
-
-This may or may not be an English sentence. You decide. We report.
-
-```{r}
-##Toyline code
-  #Create some data for a simple scatterplot with trend line
-  a <- 2
-  b <- -3
-  sig_sq <- 2.0
-  x <- runif(40)
-  y <- a + b * x + rnorm(40, sd = sqrt(sig_sq))
-  avg_x <- mean(x)
-  
-  
-  #Print the two 40-observation objects you just created
-  x
-  y
-  
-  #Print the mean of X to a .txt file
-  write(avg_x, "avg_x.txt")
-  
-  #Create a scatterplot with trendline of X and Y
-  plot(x, y)
-  abline(a, b, col = "purple")
-  
-  #Print scatterplot to external PDF file
-  dev.print(pdf, "toy_line_plot.pdf")
-```
-
-Now let's try adding in the code from the care and feeding of Tibbles, which I <i>really</i> thought was a Star Trek reference.
-
-```{r}
+#Get gapminder data
+install.packages("gapminder")
+library(gapminder)
 
 #Check structure of Gapminder data
 str(gapminder)
 
+#Install tidyverse
+install.packages("tidyverse")
+library(tidyverse)
 
 #Now that tidyverse - and by extension tibbles - are loaded, let's print Gapminder
 class(gapminder)
@@ -101,5 +69,3 @@ p + geom_point(aes(color = continent)) # map continent to color
 p + geom_point(alpha = (1/3), size = 3) + geom_smooth(lwd = 3, se = FALSE)
 p + geom_point(alpha = (1/3), size = 3) + facet_wrap(~ continent) +
   geom_smooth(lwd = 1.5, se = FALSE)
-```
-
