@@ -36,10 +36,16 @@ This may or may not be an English sentence. You decide. We report.
 Now let's try adding in the code from the care and feeding of Tibbles, which I <i>really</i> thought was a Star Trek reference.
 
 ```{r}
+#Get gapminder data
+install.packages("gapminder")
+library(gapminder)
 
 #Check structure of Gapminder data
 str(gapminder)
 
+#Install tidyverse
+install.packages("tidyverse")
+library(tidyverse)
 
 #Now that tidyverse - and by extension tibbles - are loaded, let's print Gapminder
 class(gapminder)
