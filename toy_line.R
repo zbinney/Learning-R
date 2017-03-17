@@ -10,6 +10,7 @@ x <- runif(40)
 y <- a + b * x + rnorm(40, sd = sqrt(sig_sq))
 (avg_x <- mean(x))
 
+
 #Print the two 40-observation objects you just created
 x
 y
