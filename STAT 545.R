@@ -39,6 +39,10 @@
   #install.packages("gapminder")
   library(gapminder)
   
+  #Get flights data
+  #install.packages("nycflights13")
+  library(nycflights13)
+  
   #Check structure of Gapminder data
   str(gapminder)
   
@@ -294,13 +298,8 @@
       #New variable is automatically "NA" for first (earliest) observation within each country.
   
     zach_gap_maxchange <- zach_gap_change %>%
-      group_by(continent, country) %>% 
-      top_n(-1, wt = le_change_5y)
-      #Within each country, retain the worst life expectancy change
-    
-    zach_gap_maxchange <- zach_gap_maxchange %>%
       group_by(continent) %>% 
-      top_n(-1, wt = le_change_5y) %>% 
-      select(continent, country, year, le_change_5y)
+      filter(min_rank(le_change_5y) < 2)
       #Within each continent, retain the worst life expectancy change
+    
     
