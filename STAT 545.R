@@ -33,17 +33,17 @@
   
   
   
-##### DATA EXPLORATION, GAPMINDER, DPLYR (Classes 4-5) #####
+##### DATA EXPLORATION, GAPMINDER, DPLYR (Classes 4-6, 8) #####
   
   #Get gapminder data
-  install.packages("gapminder")
+  #install.packages("gapminder")
   library(gapminder)
   
   #Check structure of Gapminder data
   str(gapminder)
   
   #Install tidyverse
-  install.packages("tidyverse")
+  #install.packages("tidyverse")
   library(tidyverse)
   
   #Now that tidyverse - and by extension tibbles - are loaded, let's print Gapminder
@@ -291,6 +291,16 @@
       group_by(continent, country) %>% 
       mutate(le_change_5y = lifeExp - lag(lifeExp))
       #This creates new dataset with a variable representing 5-year change in life expectancy.
-      #New variable is automaticall "NA" for first (earliest) observation within each country.
+      #New variable is automatically "NA" for first (earliest) observation within each country.
   
-      
+    zach_gap_maxchange <- zach_gap_change %>%
+      group_by(continent, country) %>% 
+      top_n(-1, wt = le_change_5y)
+      #Within each country, retain the worst life expectancy change
+    
+    zach_gap_maxchange <- zach_gap_maxchange %>%
+      group_by(continent) %>% 
+      top_n(-1, wt = le_change_5y) %>% 
+      select(continent, country, year, le_change_5y)
+      #Within each continent, retain the worst life expectancy change
+    
