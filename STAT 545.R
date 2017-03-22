@@ -303,3 +303,279 @@
       #Within each continent, retain the worst life expectancy change
     
     
+    
+    
+    
+    
+    
+
+    
+    
+    
+##### DATA VIZ / GGPLOT2(R FOR DATA SCIENCE BOOK, CH. 3) #####
+    
+    #View MPG dataset
+    mpg
+    
+    #GRAPH TEMPLATE. DO NOT RUN!
+    #ggplot(data = <DATA>) + 
+      #<GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+    
+    
+    #Basic scatterplots
+    
+      #create basic, unmodified scatterplot of displ (engine size) vs. MPG
+      ggplot(data=mpg) + #Creates coordinate system to which we can add layers.
+                         #Dataset being plotted is MPG
+        geom_point(mapping = aes(x = displ, y = hwy)) #Add a layer of points to coordinate system.
+                                                      #Specifically, "mapping" the following "aesthetics"
+  
+    
+      
+      #Modifying plot "aesthetics"
+      
+      #Map the scatterplot points to a COLOR by vehicle "class"
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy, color = class))
+        #Just needed to associate the aesthetic "color" with variable "class"
+        #ggplot2 automatically set a color per level of "class" and added legend
+      
+      #Map the scatterplot points to a SIZE by vehicle "class", although it's a little weird
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy, size = class))
+        #Hell, ggplot2 even warns us this is a dumb idea. But it'll work
+      
+      #Map the scatterplot points to a TRANSPARENCY by vehicle "class"
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy, alpha = class))
+      
+      #Map the scatterplot points to a SHAPE by vehicle "class"
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+        #Maximum 6 shapes --> SUVs unplotted! Whomp whomp.
+      
+      #Try mapping a continuous variable to color, in our case City MPG
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy, color = cty))
+        #You get a gradation (automatically generated? So dark...)
+        #Same thing happens with size, though exact category boundaries unclear
+        #Can't do this with shape
+      
+      #Try mapping same variable (class) to multiple aesthetics
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy, color = class, size = class))
+        #Both are applied! It works!
+      
+      #Can also subset points with a logical aesthetic!
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy, color = cty < 20))
+        #Colors points differently depending on their city MPG!
+      
+      #NOTE: in all these, ggplot2 automatically chose a scale (both for axes and aesthetics)
+      #Also note X and Y locations themselves are "aesthetics" --> location aesthetics
+      
+      #Make all scatterplot points blue
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+        #Note "color="blue"" is outside the aes parentheses! It's an argument of the
+        #geom_point function, so applies to all points
+      
+        #Can also specify size in mm, or shape as corresponding number from Fig. 3.1 in
+        #R for data science. Can also modify shape border, fill
+        #Can specify range of color gradients, transparency of shape, etc...very flexible
+      
+      
+      
+      
+    #Facetting
+      
+      #Basic scatterplot: facets (subplots) on a single variable
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy)) +
+        facet_wrap(~ class, nrow = 3, labeller = "label_both")
+        #NOTE: Could also graph in column with facet_grip (. ~ class)
+      
+      #Basic scatterplot: facets (subplots) on multiple variables
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy)) +
+        facet_grid(drv ~ cyl, labeller = "label_both")
+      
+      
+    
+      
+      
+      
+    #Geoms: different "visual objects" to represent the data - i.e. different chart types!
+      #Over 30 different geoms. SEE GGPLOT2 cheatsheet.
+      
+      #Comparing "point" (scatterplot) geom to "smooth" (smooth line) geom
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy))
+      
+      ggplot(data=mpg) +
+        geom_smooth(mapping = aes(x = displ, y = hwy))
+        #Note: default method for fitting smooth line is LOESS
+      
+      #All geoms take a "mapping" argument, but not every aesthetic works with every geom
+      
+      #Stratified line plot
+      ggplot(data=mpg) +
+        geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+      
+      #Overlay fitted lines on scatterplot, stratifying by color
+      ggplot(data=mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy, color = drv)) +
+        geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv, color=drv))
+        #Problem: if wanted to change x-axis, have to do so in two places. Solution?
+      
+      #Global (instead of local) mappings for ALL layers
+      ggplot(data=mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+        geom_point() +
+        geom_smooth()
+      
+      #Use locals mappings to apply aesthetic to only one layer
+      ggplot(data=mpg, mapping = aes(x = displ, y = hwy)) +
+        geom_point(mapping = aes(color = drv)) +
+        geom_smooth()
+      
+      #Can even use locals to plot different data in different layers
+      ggplot(data=mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+        geom_point() +
+        geom_smooth(data = filter(mpg, drv == "4"))
+        #Display line just for 4wd vehicles
+      
+      #Basic bar chart
+      ggplot(data = diamonds) +
+        geom_bar(mapping = aes(x = cut))
+      
+      #Colored bar chart
+      ggplot(data = diamonds) +
+        geom_bar(mapping = aes(x = cut, fill = cut))
+        #Kinda pointless, but will make more sense later
+        
+      
+    #Stats (statistical transformations): Algorithm used to create variable not in dataset
+    #for plotting. "stat" for smoother is fitted model predictions; for bars/histograms,
+    #counts, etc. Check help for a given geom for details.
+    #Over 20 available in GGPLOT2
+      
+      
+      #We could use the underlying stat to recreate the bar plot above!
+      ggplot(data = diamonds) +
+        stat_count(mapping = aes(x = cut))
+        
+      #Use stat explicitly 1: overriding default stat. 
+      #Ex: bar chart with count already in dataset
+      demo <- tribble(
+        ~a,      ~b,
+        "bar_1", 20,
+        "bar_2", 30,
+        "bar_3", 40
+      )
+      
+      ggplot(data = demo) +
+        geom_bar(mapping = aes(x = a, y = b), stat = "identity")
+      
+      #Use stat explicitly 2: override default mapping from transformation to aesthetic 
+      #Ex: proportion in bar chart
+      ggplot(data = diamonds) +
+        geom_bar(mapping = aes (x = cut, y = ..prop.., group = 1))
+      
+      #Use stat explicitly 3: draw attention to transformation
+      #Ex: plot min, median, and max depth by cut using stat_summary()
+      ggplot(data = diamonds) +
+        stat_summary(mapping = aes(x = cut, y = depth),
+                                   fun.y = median,
+                                   fun.ymin = min,
+                                   fun.ymax = max)
+      
+      
+    
+      
+      
+    #Position adjustments
+      
+      #Colored, STACKED bar chart
+      ggplot(data = diamonds) +
+        geom_bar(mapping = aes(x = cut, fill = clarity))
+        #Stacked bar chart of cut, stratified and colored by clarity
+        #The stacking came from a (implied) "position" argument (, position="stack")!
+      
+        #Alter implicit position function to "identity"
+        ggplot(data = diamonds) +
+          geom_bar(mapping = aes(x = cut, fill = clarity), 
+                   alpha = 0.1, position = "identity")
+                   #Alpha adjusts transparency so we can see the effect of position = identity
+          #Silly for bar charts, but is default for scatterplots
+        
+        #Alter implicit position function to "fill" -> will plot proportions
+        ggplot(data = diamonds) +
+          geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
+        
+        #Alter implicit position function to "dodge" -> GROUPED bar chart
+        ggplot(data = diamonds) +
+          geom_bar(mapping = aes(x = cut, fill = clarity), position = "dodge")
+        
+      #Recall our basic scatterplot
+      ggplot(data = mpg) +
+        geom_point(mapping = aes(x = displ, y = hwy))
+        #Issue: 234 observations, but only 126 points b/c overlapping values
+        
+        #Solution? Position = "jitter" adds tiny random perturbations to better
+        #show massing of points
+        ggplot(data = mpg) +
+          geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+        
+        #Alternatively:
+        ggplot(data = mpg) +
+          geom_jitter(mapping = aes(x = displ, y = hwy))
+        
+        #Could also use geom_count which scales size of point to # observations!
+        
+      
+        
+    #Coordinate systems
+        
+      #Flip X and Y axes! Example of boxplot:
+      ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+        geom_boxplot() + 
+        coord_flip()
+        #Especially useful for long/many labels
+      
+      
+      #Polar coordinates. Unlikely to use frequently, so just copy-pasted code for reference
+      bar <- ggplot(data = diamonds) + 
+        geom_bar(
+          mapping = aes(x = cut, fill = clarity), 
+          show.legend = FALSE,
+          width = 1
+        ) + 
+        theme(aspect.ratio = 1) +
+        labs(x = NULL, y = NULL)
+      
+      bar + coord_flip()
+      bar + coord_polar()
+      
+    
+    #Layered GRAMMAR OF GRAPHICS template to build any plot!
+    #ggplot(data = <DATA>) + 
+      #<GEOM_FUNCTION>(
+        #mapping = aes(<MAPPINGS>),
+        #stat = <STAT>, 
+        #position = <POSITION>
+      #) +
+      #<COORDINATE_FUNCTION> +
+      #<FACET_FUNCTION>
+      #The 7 parameters here uniquely define any plot you'd want to produce. SEE R4DS ch. 3.10
+      
+      
+    
+      
+      
+      
+      
+      
+      
+      
+    
+  ##### NEXT SECTION OF CODE #####
